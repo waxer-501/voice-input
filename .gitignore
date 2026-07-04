@@ -8,3 +8,6 @@ __pycache__/
 # test audio artifacts
 *.wav
 *.raw
+
+# generated replacement upload file
+replacements_upload.txt
