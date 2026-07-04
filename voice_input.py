@@ -38,12 +38,16 @@ if _envfile.is_file():
 APPID = os.environ.get("VOLC_APPID", "")
 TOKEN = os.environ.get("VOLC_TOKEN", "")
 RESOURCE = os.environ.get("VOLC_RESOURCE", "volc.seedasr.sauc.duration")
-ENDPOINT = "wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async"
+ENDPOINT = os.environ.get(
+    "VOLC_ENDPOINT",
+    "wss://openspeech.bytedance.com/api/v3/sauc/bigmodel_async",
+)
+MODEL = os.environ.get("VOLC_MODEL", "bigmodel")
 
 HOTKEY = {"ctrl", "win"}
 SAMPLE_RATE = 16000
 CHUNK_BYTES = 3200
-FINAL_WAIT_SEC = 3
+FINAL_WAIT_SEC = float(os.environ.get("VOLC_FINAL_WAIT", "5"))
 PASTE_KEY = "shift+Insert"
 
 CACHE_DIR = os.path.expanduser("~/.cache/voiceinput")
@@ -194,7 +198,7 @@ class Session:
             "user": {"uid": "voice_input"},
             "audio": {"format": "pcm", "rate": SAMPLE_RATE, "bits": 16, "channel": 1, "codec": "raw"},
             "request": {
-                "model_name": "bigmodel",
+                "model_name": MODEL,
                 "enable_itn": True,
                 "enable_punc": True,
                 "enable_ddc": False,
@@ -418,8 +422,8 @@ def on_release(key):
 def _finish(session):
     if session is None:
         return
-    text = session.stop_and_get_text()
     play(BEEP_STOP)
+    text = session.stop_and_get_text()
     print("recognized: %s" % text, flush=True)
     if text:
         paste_text(text, session.target_wid)
