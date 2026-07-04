@@ -1,0 +1,10 @@
+# secrets
+.env
+
+# python
+__pycache__/
+*.pyc
+
+# test audio artifacts
+*.wav
+*.raw
